@@ -1,169 +1,200 @@
-import axios from 'axios';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8086';
-
-// Créer une instance axios avec la configuration CORS appropriée
-const api = axios.create({
-  baseURL: API_URL,
-  withCredentials: true, // Essentiel pour envoyer les cookies avec les requêtes cross-origin
-  headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json'
-  }
-});
+import { apiMethods } from './api.js';
 
 export default {
-  /**
-   * Récupère l'historique des commandes de l'utilisateur connecté
-   * @returns {Promise<Array>} Liste des commandes de l'utilisateur
-   * @throws {Error} Si la récupération échoue
-   */
-  async getUserOrders() {
+  async getUserOrders(customerId, options = {}) {
+    const { page = 1, limit = 10, status } = options;
+    
     try {
-      const response = await api.get('/orders/user');
-      return response.data.orders;
+      const params = { page, limit };
+      if (status) params.status = status;
+      
+      const response = await apiMethods.get(`/order/customer/${customerId}`, params);
+      return {
+        orders: response.data || [],
+        pagination: response.pagination || {}
+      };
     } catch (error) {
-      const message = error.response?.data?.message || 'Erreur lors de la récupération des commandes';
-      throw new Error(message);
+      throw new Error(error.message || 'Erreur lors de la récupération des commandes');
     }
   },
 
-  /**
-   * Récupère les détails d'une commande spécifique
-   * @param {number} orderId - ID de la commande
-   * @returns {Promise<Object>} Détails de la commande
-   * @throws {Error} Si la récupération échoue
-   */
   async getOrderById(orderId) {
     try {
-      const response = await api.get(`/orders/${orderId}`);
-      return response.data.order;
+      const response = await apiMethods.get(`/order/${orderId}`);
+      return response.data;
     } catch (error) {
-      const message = error.response?.data?.message || 'Erreur lors de la récupération de la commande';
-      throw new Error(message);
+      throw new Error(error.message || 'Erreur lors de la récupération de la commande');
     }
   },
 
-  /**
-   * Crée une nouvelle commande
-   * @param {Object} orderData - Données de la commande
-   * @returns {Promise<Object>} Commande créée
-   * @throws {Error} Si la création échoue
-   */
   async createOrder(orderData) {
     try {
-      const response = await api.post('/orders', orderData);
-      return response.data.order;
+      const response = await apiMethods.post('/order', orderData);
+      return response.data;
     } catch (error) {
-      const message = error.response?.data?.message || 'Erreur lors de la création de la commande';
-      throw new Error(message);
+      throw new Error(error.message || 'Erreur lors de la création de la commande');
     }
   },
 
-  /**
-   * Annule une commande
-   * @param {number} orderId - ID de la commande à annuler
-   * @returns {Promise<Object>} Commande mise à jour
-   * @throws {Error} Si l'annulation échoue
-   */
-  async cancelOrder(orderId) {
+  async cancelOrder(orderId, reason = 'Cancelled by user') {
     try {
-      const response = await api.patch(`/orders/${orderId}/cancel`);
-      return response.data.order;
+      const response = await apiMethods.patch(`/order/${orderId}/cancel`, { reason });
+      return response.data;
     } catch (error) {
-      const message = error.response?.data?.message || 'Erreur lors de l\'annulation de la commande';
-      throw new Error(message);
+      throw new Error(error.message || 'Erreur lors de l\'annulation de la commande');
     }
   },
 
-  /**
-   * Met à jour le statut d'une commande (pour les admins)
-   * @param {number} orderId - ID de la commande
-   * @param {string} status - Nouveau statut
-   * @returns {Promise<Object>} Commande mise à jour
-   * @throws {Error} Si la mise à jour échoue
-   */
   async updateOrderStatus(orderId, status) {
     try {
-      const response = await api.patch(`/orders/${orderId}/status`, { status });
-      return response.data.order;
+      const response = await apiMethods.put(`/order/${orderId}`, { statut: status });
+      return response.data;
     } catch (error) {
-      const message = error.response?.data?.message || 'Erreur lors de la mise à jour du statut';
-      throw new Error(message);
+      throw new Error(error.message || 'Erreur lors de la mise à jour du statut');
     }
   },
 
-  /**
-   * Ajoute un avis sur une commande
-   * @param {number} orderId - ID de la commande
-   * @param {Object} reviewData - Données de l'avis (rating, comment)
-   * @returns {Promise<Object>} Avis créé
-   * @throws {Error} Si l'ajout échoue
-   */
+  async getOrderStats(filters = {}) {
+    try {
+      const response = await apiMethods.get('/order/stats', filters);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.message || 'Erreur lors de la récupération des statistiques');
+    }
+  },
+
+  async getAllOrders(options = {}) {
+    const { page = 1, limit = 10, status, customer } = options;
+    
+    try {
+      const params = { page, limit };
+      if (status) params.status = status;
+      if (customer) params.customer = customer;
+      
+      const response = await apiMethods.get('/order', params);
+      return {
+        orders: response.data || [],
+        pagination: response.pagination || {}
+      };
+    } catch (error) {
+      throw new Error(error.message || 'Erreur lors de la récupération des commandes');
+    }
+  },
+
   async addOrderReview(orderId, reviewData) {
     try {
-      const response = await api.post(`/orders/${orderId}/review`, reviewData);
-      return response.data.review;
+      const response = await apiMethods.post(`/order/${orderId}/review`, reviewData);
+      return response.data;
     } catch (error) {
-      const message = error.response?.data?.message || 'Erreur lors de l\'ajout de l\'avis';
-      throw new Error(message);
+      throw new Error(error.message || 'Erreur lors de l\'ajout de l\'avis');
     }
   },
 
-  /**
-   * Récupère les avis d'une commande
-   * @param {number} orderId - ID de la commande
-   * @returns {Promise<Array>} Liste des avis
-   * @throws {Error} Si la récupération échoue
-   */
   async getOrderReviews(orderId) {
     try {
-      const response = await api.get(`/orders/${orderId}/reviews`);
-      return response.data.reviews;
+      const response = await apiMethods.get(`/order/${orderId}/reviews`);
+      return response.data || [];
     } catch (error) {
-      const message = error.response?.data?.message || 'Erreur lors de la récupération des avis';
-      throw new Error(message);
+      throw new Error(error.message || 'Erreur lors de la récupération des avis');
     }
   },
 
-  /**
-   * Met à jour un avis
-   * @param {number} reviewId - ID de l'avis
-   * @param {Object} reviewData - Nouvelles données de l'avis
-   * @returns {Promise<Object>} Avis mis à jour
-   * @throws {Error} Si la mise à jour échoue
-   */
-  async updateReview(reviewId, reviewData) {
-    try {
-      const response = await api.patch(`/reviews/${reviewId}`, reviewData);
-      return response.data.review;
-    } catch (error) {
-      const message = error.response?.data?.message || 'Erreur lors de la mise à jour de l\'avis';
-      throw new Error(message);
-    }
+  // Méthodes utilitaires pour le formatage
+  formatOrderStatus(status) {
+    const statusMap = {
+      'Unpaid': 'Non payée',
+      'Paid': 'Payée',
+      'Cancelled': 'Annulée'
+    };
+    return statusMap[status] || status;
   },
 
-  /**
-   * Supprime un avis
-   * @param {number} reviewId - ID de l'avis à supprimer
-   * @returns {Promise<void>}
-   * @throws {Error} Si la suppression échoue
-   */
-  async deleteReview(reviewId) {
-    try {
-      await api.delete(`/reviews/${reviewId}`);
-    } catch (error) {
-      const message = error.response?.data?.message || 'Erreur lors de la suppression de l\'avis';
-      throw new Error(message);
-    }
+  formatPaymentMethod(method) {
+    const methodMap = {
+      'MTN MoMo': 'MTN Mobile Money',
+      'Orange Money': 'Orange Money',
+      'Wave': 'Wave'
+    };
+    return methodMap[method] || method;
   },
 
-  /**
-   * Récupère toutes les commandes (pour les admins)
-   * @returns {Promise<Array>} Liste de toutes les commandes
-   * @throws {Error} Si la récupération échoue
-   */
-  async getAllOrders() {
+  formatPrice(price) {
+    return new Intl.NumberFormat('fr-FR', {
+      style: 'currency',
+      currency: 'XOF'
+    }).format(price);
+  },
+
+  formatDate(date) {
+    return new Date(date).toLocaleDateString('fr-FR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  },
+
+  // Validation côté client
+  validateOrderData(orderData) {
+    const errors = [];
+    
+    if (!orderData.plat) errors.push('Plat requis');
+    if (!orderData.customer) errors.push('Client requis');
+    if (!orderData.category) errors.push('Catégorie requise');
+    if (!orderData.price || orderData.price <= 0) errors.push('Prix invalide');
+    if (!orderData.deliveryDate) errors.push('Date de livraison requise');
+    
+    if (orderData.payMethod && !orderData.paymentPhone) {
+      errors.push('Numéro de téléphone requis pour le paiement mobile');
+    }
+    
+    return errors;
+  },
+
+  // Calculer le délai de livraison
+  calculateDeliveryTime(orderDate, deliveryDate) {
+    const order = new Date(orderDate);
+    const delivery = new Date(deliveryDate);
+    const diffTime = Math.abs(delivery - order);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 1) return 'Demain';
+    if (diffDays === 0) return 'Aujourd\'hui';
+    return `Dans ${diffDays} jours`;
+  },
+
+  // Vérifier si une commande peut être annulée
+  canCancelOrder(order) {
+    if (order.statut === 'Paid' || order.statut === 'Cancelled') {
+      return false;
+    }
+    
+    // Vérifier si la deadline de paiement n'est pas dépassée
+    const now = new Date();
+    const deadline = new Date(order.paymentDeadline);
+    
+    return now < deadline;
+  },
+
+  // Obtenir le temps restant pour le paiement
+  getPaymentTimeRemaining(paymentDeadline) {
+    const now = new Date();
+    const deadline = new Date(paymentDeadline);
+    const diffTime = deadline - now;
+    
+    if (diffTime <= 0) return 'Expiré';
+    
+    const hours = Math.floor(diffTime / (1000 * 60 * 60));
+    const minutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
+    
+    if (hours > 0) {
+      return `${hours}h ${minutes}min`;
+    }
+    return `${minutes}min`;
+  }
+};
+
     try {
       const response = await api.get('/orders/admin/all');
       return response.data.orders;

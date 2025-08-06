@@ -7,7 +7,10 @@ export const useAuthStore = defineStore('auth', () => {
 
   // Computed properties for authentication status and role
   const isAuthenticated = computed(() => !!user.value);
-  const isAdmin = computed(() => user.value?.type === 'admin'); // Adjusted to use 'type' instead of 'role'
+  const isAdmin = computed(() => user.value?.role === 'administrator');
+  const isStudent = computed(() => user.value?.role === 'Student');
+  const isTeacher = computed(() => user.value?.role === 'Teacher');
+  const userRole = computed(() => user.value?.role || null);
 
   /**
    * Initializes the authentication state by fetching the current user.
@@ -68,6 +71,26 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   /**
+   * Registers a new user account
+   * @param {Object} registrationData - Registration data
+   * @returns {Promise<boolean>} True if registration succeeds
+   * @throws {Error} If registration fails
+   */
+  async function register(registrationData) {
+    try {
+      const userData = await authService.register(registrationData);
+      if (userData) {
+        setUser(userData);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Erreur d\'inscription:', error.message);
+      throw new Error(error.message || 'Erreur lors de l\'inscription');
+    }
+  }
+
+  /**
    * Logs out the current user and clears the session.
    * @returns {Promise<void>}
    */
@@ -106,8 +129,12 @@ export const useAuthStore = defineStore('auth', () => {
     user,
     isAuthenticated,
     isAdmin,
+    isStudent,
+    isTeacher,
+    userRole,
     setUser,
     login,
+    register,
     logout,
     updateProfile,
     initializeAuth

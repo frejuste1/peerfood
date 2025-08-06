@@ -1,0 +1,53 @@
+{
+  "name": "peerfood",
+  "version": "1.0.0",
+  "description": "Système de gestion de cantine scolaire avec paiement mobile intégré",
+  "main": "backend/server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run serve",
+    "dev:frontend": "cd frontend && npm run dev",
+    "start": "cd backend && npm start",
+    "build": "cd frontend && npm run build",
+    "test": "npm run test:backend && npm run test:frontend",
+    "test:backend": "cd backend && npm test",
+    "test:frontend": "cd frontend && npm run test:unit",
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "clean": "rm -rf node_modules backend/node_modules frontend/node_modules",
+    "lint": "npm run lint:backend && npm run lint:frontend",
+    "lint:backend": "cd backend && npx eslint . --ext .js",
+    "lint:frontend": "cd frontend && npx eslint . --ext .vue,.js",
+    "setup": "npm run install:all && npm run setup:env",
+    "setup:env": "cp backend/.env.example backend/.env && echo 'Please configure your .env file'",
+    "db:migrate": "cd backend && npm run migrate",
+    "db:seed": "cd backend && npm run seed"
+  },
+  "keywords": [
+    "cantine",
+    "school",
+    "food",
+    "mobile-payment",
+    "vue",
+    "express",
+    "mysql"
+  ],
+  "author": "Kei Mansou Prince Frejuste <keifrejuste26@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Frejuste26/peerfood.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Frejuste26/peerfood/issues"
+  },
+  "homepage": "https://github.com/Frejuste26/peerfood#readme",
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "eslint": "^8.57.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  }
+}
