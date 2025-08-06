@@ -39,5 +39,8 @@
     "uuid": "^11.1.0",
     "winston": "^3.17.0",
     "wrangler": "^4.14.4"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.0"
   }
 }
