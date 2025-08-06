@@ -1,0 +1,16 @@
+@import './base.css';
+
+.input {
+    border: 1px solid var(--gray-300);
+    border-radius: 0.375rem;
+    padding: 0.5rem;
+}
+
+.input:focus {
+    border-color: var(--orange-300);
+    outline: none;
+}
+
+.input::placeholder {
+    color: var(--gray-400);
+}
