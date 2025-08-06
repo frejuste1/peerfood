@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><%= title %></title>
+    <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/css/theme.css">
+</head>
+<body>
+    <%- include("./Components/loader.ejs") %>
+    <div class="app-container">
+        <%- include("./Components/sidebare.ejs") %>
+        <div class="page-wrapper">
+            <%- include("./Components/navbar.ejs") %>
+            <div class="page-breadcrumb">
+                <%- include("./Components/breadcrumb.ejs") %>
+            </div>
+            <div class="container-fluid"> 
+                <!-- Footer -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <%- include("./Components/footer.ejs") %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.min.js" integrity="sha256-AlTido85uXPlSyyaZNsjJXeCs07eSv3r43kyCVc8ChI=" crossorigin="anonymous"></script>
+    <script src="/js/theme.js"></script>
+    <script src="/js/loader.js"></script>
+    <script src="/js/checkout.js"></script>
+</body>
+</html>

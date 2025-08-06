@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin Panel</title>
+    <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
+    <style>
+        /* Variables de couleurs */
+        :root {
+            --orange-100: #FFD1A1;
+            --orange-200: #FFAD50;
+            --orange-300: #F58114;
+            --orange-400: #C15F00;
+            --orange-500: #8A4500;
+
+            --gray-100: #F5F5F5;
+            --gray-200: #E5E5E5;
+            --gray-300: #9E9E9E;
+            --gray-400: #666666;
+            --gray-500: #333333;
+            --white: #FFFFFF;
+            --dark: #181A1F;
+        }
+
+        /* Global styles */
+        body {
+            font-family: Arial, sans-serif;
+            background: var(--gray-100);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: var(--dark);
+        }
+
+        .container {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            width: 400px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+        }
+
+        .login-title {
+            font-size: 1.8rem;
+            color: var(--orange-400);
+            margin-bottom: 1.5rem;
+            font-weight: bold;
+        }
+
+        .account-wall {
+            padding: 1rem 0;
+        }
+
+        .profile-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+            border: 3px solid var(--orange-300);
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            color: var(--gray-500);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group svg {
+            margin-right: 0.5rem;
+            fill: var(--orange-400);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            background: var(--gray-100);
+            transition: border-color 0.3s, background 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--orange-300);
+            background: var(--white);
+            outline: none;
+        }
+
+        .validation-message {
+            font-size: 0.8rem;
+            color: var(--orange-300);
+            margin-top: 0.5rem;
+        }
+
+        .checkbox {
+            margin-bottom: 1.5rem;
+        }
+
+        .checkbox label {
+            font-size: 0.9rem;
+            color: var(--gray-400);
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1rem;
+            font-weight: bold;
+            color: var(--white);
+            background: var(--orange-300);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--orange-400);
+            transform: scale(1.02);
+        }
+
+        .btn:active {
+            background: var(--orange-500);
+        }
+
+        .alert {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--white);
+            background: red;
+            padding: 0.5rem;
+            border-radius: 8px;
+        }
+
+        footer {
+            margin-top: 1.5rem;
+            font-size: 0.8rem;
+            color: var(--gray-400);
+        }
+
+        footer a {
+            color: var(--orange-300);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="login-title">Admin Panel Login</h1>
+        <div class="account-wall">
+            <img class="profile-img" src="/img/illustration.png" alt="Profile Image">
+            <form id="login-form" class="form-signin" method="post">
+                <div class="form-group">
+                    <label for="clientUsername">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
+                        </svg>
+                        Nom d'utilisateur
+                    </label>
+                    <input type="text" id="clientUsername" class="form-control" required placeholder="Ex: jean_dupont"
+                           pattern="^[a-zA-Z0-9_]{3,20}$">
+                    <div class="validation-message">3 à 20 caractères (lettres, chiffres, _)</div>
+                </div>
+                <div class="form-group">
+                    <label for="clientPassword">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                            <path d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M12 2C6.48 2 2 7.03 2 12c0 2.88 1.55 5.41 4 6.78V20h4v-1.22c2.45-1.37 4-3.9 4-6.78 0-4.97-4.48-10-10-10zm0 16c-1.1 0-2-.9-2-2h4c0 1.1-.9 2-2 2z"/>
+                        </svg>
+                        Mot de passe
+                    </label>
+                    <input type="password" id="clientPassword" class="form-control" required placeholder="Ex: 123456"
+                           pattern="^.{6,20}$">
+                    <div class="validation-message">6 à 20 caractères</div>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" value="remember-me"> Se souvenir de moi
+                    </label>
+                </div>
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Connexion</button>
+                <div class="alert alert-danger" role="alert" style="display: none;">Erreur de connexion</div>
+            </form>
+        </div>
+        <footer>
+            <p>Pas encore inscrit ? <a href="#">Créer un compte</a></p>
+        </footer>
+    </div>
+</body>
+</html>

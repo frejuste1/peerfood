@@ -1,0 +1,96 @@
+// Interaction avec le tableau
+    document.querySelectorAll('.table tbody tr').forEach(row => {
+        row.addEventListener('click', function() {
+            // Afficher les détails de la commande
+            const orderId = this.querySelector('td').textContent;
+            showOrderDetails(orderId);
+        });
+    });
+
+    // Système de notifications
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.innerHTML = `
+            <div class="notification-content">
+                <div class="notification-message">${message}</div>
+            </div>
+        `;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.classList.add('show');
+        }, 100);
+        
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+
+    // Tri des tableaux
+    document.querySelectorAll('th').forEach(header => {
+        header.addEventListener('click', function() {
+            const table = this.closest('table');
+            const index = Array.from(this.parentElement.children).indexOf(this);
+            const rows = Array.from(table.querySelectorAll('tbody tr'));
+            const isAscending = this.classList.contains('asc');
+            
+            rows.sort((a, b) => {
+                const aValue = a.children[index].textContent;
+                const bValue = b.children[index].textContent;
+                return isAscending ? 
+                    bValue.localeCompare(aValue) : 
+                    aValue.localeCompare(bValue);
+            });
+            
+            this.classList.toggle('asc');
+            rows.forEach(row => table.querySelector('tbody').appendChild(row));
+            
+            showNotification('Tableau trié avec succès');
+        });
+    });
+
+    // Amélioration de la modal
+    function showOrderDetails(orderId) {
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5>Détails de la commande ${orderId}</h5>
+                        <button type="button" class="close">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="order-details">
+                            <div class="order-info">
+                                <h6>Informations client</h6>
+                                <p>Nom: John Doe</p>
+                                <p>Email: john@example.com</p>
+                                <p>Téléphone: +33 6 12 34 56 78</p>
+                            </div>
+                            <div class="order-products">
+                                <h6>Produits commandés</h6>
+                                <ul>
+                                    <li>Produit A - 2x - 50€</li>
+                                    <li>Produit B - 1x - 30€</li>
+                                </ul>
+                            </div>
+                            <div class="order-total">
+                                <h6>Total: 130€</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        setTimeout(() => modal.classList.add('show'), 10);
+        
+        modal.querySelector('.close').addEventListener('click', () => {
+            modal.classList.remove('show');
+            setTimeout(() => modal.remove(), 300);
+        });
+    }
